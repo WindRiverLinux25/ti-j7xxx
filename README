@@ -1,4 +1,4 @@
-			TI J721E/J784S4 EVM Board
+			TI J721E EVM Board
 
 
 1. About this document
@@ -21,8 +21,8 @@ Contact <support@windriver.com> or your support representative for more
 information on submitting changes.
 
 
-Building the ti-j72xx/ti-j78xx layer
-------------------------------------
+Building the ti-j72xx layer
+---------------------------
 This layer and wr-kernel layer should be added to bblayers.conf. This
 is done automatically when using the Wind River configure wrapper.
 
@@ -30,10 +30,6 @@ Note:
 To build wrlinux for TI J721E EVM  board, use:
 
 	--machines ti-j72xx
-
-To build wrlinux for TI J784S4 EVM board, use:
-
-	--machines ti-j78xx
 
 
 License
@@ -138,7 +134,6 @@ Example settings for the monitor (u-boot) are shown below:
 nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
 ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
 console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02800000;tftp $loadaddr $bootfile; \ (J721E EVM)
-console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02880000;tftp $loadaddr $bootfile; \ (J784S4 EVM)
 tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
 ethaddr=00:04:9F:02:00:FD
 loadaddr=0x82000000
@@ -150,7 +145,6 @@ serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
 fdtfile=k3-j721e-common-proc-board.dtb (J721E EVM)
-fdtfile=k3-j784s4-evm.dtb (J784S4 EVM)
 rootpath=/tftpboot/rootfs
 consoledev=ttyS2
 baudrate=115200
@@ -186,10 +180,6 @@ For J721E EVM:
    $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
    $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
 
-For J784S4 EVM:
-   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02880000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
-   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j784s4-evm.dtb; booti 0x82000000 - 0x88000000
-
 Note:
 If the IPC feature is enabled, about how to enable IPC please refer to the
 section 6.2 for detail, it first needs to run "rproc init;run boot_rprocs_mmc" in u-boot to
@@ -207,7 +197,7 @@ Simply add line as follows to ${buildprj}/build/conf/local.conf:
 	WRTEMPLATE = "feature/bsp-extras"
 
 And it is recommended to refer to the "Foundational Components" of the sdk
-release note "Processor SDK Linux for J721e/J784S4" from the TI web.
+release note "Processor SDK Linux for J721e" from the TI web.
 
 6.1 CAN
 -------
@@ -288,7 +278,7 @@ information:
 6.5 Graphics
 ------------
 
-J721E/J784S4 device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
+J721E device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
 from Imagination Technologies Inc. 3D-graphics apps call userspace libraries to drive
 the GPU directly by the graphics driver.
 
@@ -326,9 +316,6 @@ Technologies for accelerating multimedia decode.
 Multi-Standard HD Video Encoder (ENCODER) based on VXE384MP2 from Imagination
 Technologies for accelerating multimedia encode.
 
-The Encoder/Decoder (VENC/VDEC) is found on the J784S4 SoC. Combined H.264 and H.265
-encoder/decoder used in the Texas Instruments J784S4 SoC.
-
 The Linux Kernel Drivers has integrated the Video Decoder and Encoder as module by default.
 Because of the license issue, you can manually build the Image as below to
 integrate the gstreamer related packages:
@@ -354,9 +341,6 @@ An example to test with GStreamer Pipelines on target board:
 J721E EVM:
 	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! qtdemux ! h264parse ! v4l2h264dec ! videoconvert ! v4l2h264enc ! filesink location=/<path_to_file>
 
-J784S4 EVM:
-	$ gst-launch-1.0 filesrc location=/<path_to_file> ! rawvideoparse ! v4l2h264enc ! filesink location=/<path_to_file> sync=true
-
 6.7 Build U-Boot
 ----------------
 
@@ -365,38 +349,12 @@ compiled separately, use the following command：
 
 	# bitbake u-boot-ti-staging
 
-6.8 OSPI Flash (J784S4 EVM)
----------------------------
-
-In order to use OSPI Flash, the configuration switch on J784s4 EVM board should be set with:
-
-SW2.1=OFF
-
-6.9 USB
+6.8 USB
 -------
 
-6.9.1 USB2.0 & USB3.1 multiplex (J784S4 EVM)
---------------------------------------------
-
-The J784S4-EVB supports a single USB interface. Therefore, the user must configure
-for either the USB3.1 Type C interface [J4] or the USB2.0 Type A interface [J5]. Both can not
-be operated simultaneously. The default system is the USB3.1 Type C interface, in order to
-switch to the USB2.0 Type A interface, using the command on WRLinux shell:
-	$ gpioset -c1 -t0 --hold-period 20ms 12=1
-
-Otherwise switch to the USB3.1 Type C interface, using the command on WRLinux shell:
-	$ gpioset -c1 -t0 --hold-period 20ms 12=0
-
-Note: same as TI SDK, the bottom port of the two USB2.0 ports can not recognize
-U disk, the top port of the two USB2.0 ports works fine.
-
-6.9.2 USB3.1 Mode Switch
+6.8.1 USB3.1 Mode Switch
 ------------------------
 
-For J784S4 EVM:
-    SW2.[4:3] = 00   DFP(Downstream Facing Port)
-    SW2.[4:3] = 01   DRP(Dual Role Port)
-    SW2.[4:3] = 1X   UFP(Upstream Facing Port)
 For J721E EVM:
     SW3.[4:3] = 00   DFP(Downstream Facing Port)
     SW3.[4:3] = 10   DRP(Dual Role Port)
@@ -445,12 +403,10 @@ steps:
 Step 1: Download Prebuilt PSDK RTOS
 
 	$ cd {path/to/file}
-	$ tar xf ti-processor-sdk-rtos-j784s4-evm-<version>-prebuilt.tar.gz (J784S4 EVM)
 	$ tar xf ti-processor-sdk-rtos-j721e-evm-<version>-prebuilt.tar.gz (J721E EVM)
 
 Step 2: Download Demo Data Sets
 	psdk_rtos_ti_data_set_xx_xx_xx.tar.gz
-	psdk_rtos_ti_data_set_xx_xx_xx_j784s4.tar.gz (J784S4 EVM)
 	psdk_rtos_ti_data_set_xx_xx_xx_j721e.tar.gz (J721E EVM)
 
 Step 3: Prepare SD card
@@ -463,9 +419,6 @@ Step 4: Copy WRLinux Filesystem and Modify script
 For J721E EVM:
 	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j72xx/wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2 .
 	$ sed -i "s/tisdk-adas-image-j721e-evm.tar.xz/wrlinux-image-std-sato-ti-j72xx.rootfs.tar.bz2/;40s/-xf/-jxf/" install_to_sd_card.sh
-For J784S4 EVM:
-	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j78xx/wrlinux-image-<rootfs_type>-ti-j78xx.tar.bz2 .
-	$ sed -i 's/tisdk-adas-image-j784s4-evm.tar.xz/wrlinux-image-std-sato-ti-j78xx.rootfs.tar.bz2/;40s/-xf/-jxf/' install_to_sd_card.sh
 
 Step 5: Install Filesystem and Boot Files
 	$ ./install_to_sd_card.sh
@@ -478,7 +431,7 @@ Step 6: Run on EVM
 	$ source ./vision_apps_init.sh
 	$ ./run_app_tidl_avp.sh                 - Auto valet parking demo (needs display)
 
-Note: more testing demos, you can refer to the guide document "out_of_box_j784s4.html" or
+Note: more testing demos, you can refer to the guide document
 "out_of_box_j721e.html" in the TI web site.
 
 6.10.2 CPSW9G Virtual Client
