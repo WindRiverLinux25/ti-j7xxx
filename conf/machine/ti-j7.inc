@@ -27,7 +27,7 @@ do_image[mcdepends] += "mc::k3r5:u-boot-ti-staging:do_deploy"
 KERNEL_DTBDEST = "${KERNEL_IMAGEDEST}/dtb"
 KERNEL_DTBVENDORED = "1"
 
-PREFERRED_VERSION_u-boot-ti-staging ?= "2024.04%"
+PREFERRED_VERSION_u-boot-ti-staging ?= "2025.01%"
 
 # multilib support
 MULTILIBS ?= "multilib:lib32"
