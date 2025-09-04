@@ -12,7 +12,7 @@ PVR_K:(Error):   236: _ReadNon4KHeapPageSize() failed (PVRSRV_ERROR_INVALID_NON4
 PVR_K:(Error):   236: RGXRegisterDevice() failed (PVRSRV_ERROR_INVALID_NON4K_HEAP_PAGESIZE) in PVRSRVCommonDeviceCreate() [2099]
 [drm:pvr_drm_load [pvrsrvkm]] *ERROR* failed to create device node for device 000000001ebd9fc0 (PVRSRV_ERROR_DEVICE_REGISTER_FAILED)
 
-(LOCAL REV: NOT UPSTREAM) - Wrlinux specific
+Upstream-Status: Inappropriate
 
 Signed-off-by: Xulin Sun <xulin.sun@windriver.com>
 ---
