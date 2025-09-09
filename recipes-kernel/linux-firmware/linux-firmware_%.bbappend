@@ -8,7 +8,7 @@ SRC_URI:append:ti-j7 = "\
 TARGET:ti-j7 = "pvdec_full_bin.fw"
 
 do_install:append:ti-j7() {
-	install -m 0644 ${WORKDIR}/${TARGET} ${D}${nonarch_base_libdir}/firmware/${TARGET}
+	install -m 0644 ${WORKDIR}/sources-unpack/${TARGET} ${D}${nonarch_base_libdir}/firmware/${TARGET}
 }
 
 FILES:${PN}-pvdec-full-bin:ti-j7 = "\
