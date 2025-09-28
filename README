@@ -34,7 +34,7 @@ To build wrlinux for TI J721E EVM  board, use:
 
 License
 -------
-Copyright (C) 2024 Wind River Systems, Inc.
+Copyright (C) 2025 Wind River Systems, Inc.
 
 Source code included in the tree for individual recipes is under the LICENSE
 stated in the associated recipe (.bb file) unless otherwise stated.
@@ -153,7 +153,7 @@ baudrate=115200
 ===================================
 
 User can use the OpenEmbedded Image Creator to create the properly partitioned
-image on a SD card. It generates partitioned images from existing OpenEmbedded
+image on an SD card. It generates partitioned images from existing OpenEmbedded
 build artifacts. Please refer to the following URL for more detailed partition
 information about WIC:
 
@@ -370,7 +370,7 @@ like SysBIOS, PDK, OpenVX, Algorithms to realize system applications for vision
 processing like surround view.
 
 Vision Apps can be built or directly picked as out of the Box Demos from TI,
-prebuilt PSDK RTOS and Demo Data can be obtained though TI's technical support.
+prebuilt PSDK RTOS and Demo Data can be obtained through TI's technical support.
 It is recommended that you first refer to this guide document "out_of_box_j784s4.html" or
 "out_of_box_j721e.html", while using the vision apps.
 
@@ -438,7 +438,7 @@ Note: more testing demos, you can refer to the guide document
 ----------------------------
 
 The vision app prebuilt PSDK RTOS provides the Eth-Switch Firmware running on the R5F core
-can controls access to the CPSWng subsystem. The other cores have thin client drivers running
+can control access to the CPSWng subsystem. The other cores have thin client drivers running
 on them to receive data from the EthSwitch firmware. On the A core running Linux, the cpsw-proxy-client
 driver is responsible for the interaction with the EthSwitch firmware.
 
@@ -472,7 +472,7 @@ To get more details about TSN feature, please refer to instructions mentioned in
 The following will provide a simple test demo for each TSN feature. Their test environment is
 to directly connect one J721E EVM board eth0 port as master to another J784S4 EVM board eth0 port as the slave.
 
-Note: the below 'eth0' should be replaed with your own Ethernet port name.
+Note: the below 'eth0' should be replaced with your own Ethernet port name.
 
 6.11.1 PTP
 ----------
