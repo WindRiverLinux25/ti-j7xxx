@@ -1,4 +1,5 @@
 COMPATIBLE_MACHINE:ti-j7 = "ti-j7"
 COMPATIBLE_MACHINE:ti-j72xx-k3r5 = "ti-j72xx-k3r5"
+COMPATIBLE_MACHINE:ti-j722s-k3r5 = "ti-j722s-k3r5"
 SPL_BINARY:ti-j7 = "tispl.bin"
 PACKAGECONFIG:append:ti-j7 = " atf optee dm"
