@@ -1,4 +1,4 @@
-			TI J721E EVM Board
+			TI J721E/J722S EVM Board
 
 
 1. About this document
@@ -21,7 +21,7 @@ Contact <support@windriver.com> or your support representative for more
 information on submitting changes.
 
 
-Building the ti-j72xx layer
+Building the ti-j7xxx layer
 ---------------------------
 This layer and wr-kernel layer should be added to bblayers.conf. This
 is done automatically when using the Wind River configure wrapper.
@@ -30,6 +30,10 @@ Note:
 To build wrlinux for TI J721E EVM  board, use:
 
 	--machines ti-j72xx
+
+To build wrlinux for TI J722S EVM board, use:
+
+	--machines ti-j722s
 
 
 License
@@ -133,7 +137,7 @@ Example settings for the monitor (u-boot) are shown below:
 
 nfsboot=setenv bootargs root=/dev/nfs rw nfsroot=$serverip:$rootpath \
 ip=$ipaddr:$serverip:$gatewayip:$netmask:$hostname:$netdev:off \
-console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02800000;tftp $loadaddr $bootfile; \ (J721E EVM)
+console=$consoledev,$baudrate earlycon=ns16550a,mmio32,0x02800000;tftp $loadaddr $bootfile; \
 tftp $fdtaddr $fdtfile;booti $loadaddr - $fdtaddr
 ethaddr=00:04:9F:02:00:FD
 loadaddr=0x82000000
@@ -145,6 +149,7 @@ serverip=192.168.1.2
 netdev=eth0
 bootfile=Image
 fdtfile=k3-j721e-common-proc-board.dtb (J721E EVM)
+fdtfile=k3-j722s-evm.dtb (J722S EVM)
 rootpath=/tftpboot/rootfs
 consoledev=ttyS2
 baudrate=115200
@@ -180,6 +185,10 @@ For J721E EVM:
    $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
    $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j721e-common-proc-board.dtb; booti 0x82000000 - 0x88000000
 
+For J722S EVM:
+   $ setenv bootargs console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000 root=/dev/mmcblk1p2 rw rootwait ip=dhcp
+   $ fatload mmc 1:1 0x82000000 Image; fatload mmc 1:1 0x88000000 k3-j722s-evm.dtb; booti 0x82000000 - 0x88000000
+
 Note:
 If the IPC feature is enabled, about how to enable IPC please refer to the
 section 6.2 for detail, it first needs to run "rproc init;run boot_rprocs_mmc" in u-boot to
@@ -197,7 +206,7 @@ Simply add line as follows to ${buildprj}/build/conf/local.conf:
 	WRTEMPLATE = "feature/bsp-extras"
 
 And it is recommended to refer to the "Foundational Components" of the sdk
-release note "Processor SDK Linux for J721e" from the TI web.
+release note "Processor SDK Linux for J721e/J722s" from the TI web.
 
 6.1 CAN
 -------
@@ -248,12 +257,17 @@ Since both the u-boot and linux kernel download the firmwares from the
 rootfs directory "/lib/firmware", so NFS is not applicable to this case.
 Only WIC mode works fine.
 
-6.3 Watchdog (J721E EVM)
-------------------------
-
+6.3 Watchdog
+------------
+For J721E EVM:
 In order to use watchdog, the configuration switch on J721EX-PM2-SOM board should be set with:
 
 SW2.1=OFF, SW2.2=ON, SW3.1=ON, SW3.2=OFF
+
+For J722S EVM:
+In order to use watchdog, the configuration switch on J721EX-PM2-SOM board should be set with:
+
+SW2.5=OFF
 
 6.3.1 Usage and verification
 ----------------------------
@@ -278,7 +292,7 @@ information:
 6.5 Graphics
 ------------
 
-J721E device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
+J721E/J722S device is enabled with 3D graphics accelerator based on the Rogue 8XE/MG BXS-64-4 series
 from Imagination Technologies Inc. 3D-graphics apps call userspace libraries to drive
 the GPU directly by the graphics driver.
 
@@ -316,6 +330,9 @@ Technologies for accelerating multimedia decode.
 Multi-Standard HD Video Encoder (ENCODER) based on VXE384MP2 from Imagination
 Technologies for accelerating multimedia encode.
 
+The Encoder/Decoder (VENC/VDEC) is found on the J722S SoC. Combined H.264 and H.265
+encoder/decoder used in the Texas Instruments J722S SoC.
+
 The Linux Kernel Drivers has integrated the Video Decoder and Encoder as module by default.
 Because of the license issue, you can manually build the Image as below to
 integrate the gstreamer related packages:
@@ -338,7 +355,7 @@ _EOF
 -------------------------------
 
 An example to test with GStreamer Pipelines on target board:
-J721E EVM:
+J721E/J722S EVM:
 	$ gst-launch-1.0 filesrc location=/<path_to_file>  ! qtdemux ! h264parse ! v4l2h264dec ! videoconvert ! v4l2h264enc ! filesink location=/<path_to_file>
 
 6.7 Build U-Boot
@@ -360,6 +377,18 @@ For J721E EVM:
     SW3.[4:3] = 10   DRP(Dual Role Port)
     SW3.[4:3] = X1   UFP(Upstream Facing Port)
 
+For J722S EVM:
+    SW2.[2:3] = 11   DRP(Dual Role Port) (default)
+    SW2.[2:3] = 10   DFP(Downstream Facing Port)
+    SW2.[2:3] = 01   UFP(Upstream Facing Port)
+
+6.9 NAND Flash (J722S EVM)
+--------------------------
+
+In order to use NAND Flash, the configuration switch on J722s EVM board should be set with:
+
+SW2.1=ON
+
 6.10 Vision Apps
 ----------------
 
@@ -371,8 +400,8 @@ processing like surround view.
 
 Vision Apps can be built or directly picked as out of the Box Demos from TI,
 prebuilt PSDK RTOS and Demo Data can be obtained through TI's technical support.
-It is recommended that you first refer to this guide document "out_of_box_j784s4.html" or
-"out_of_box_j721e.html", while using the vision apps.
+It is recommended that you first refer to this guide document "out_of_box_j721e.html" or
+"out_of_box_j722s.html", while using the vision apps.
 
 In order to run vision apps with full features on WRLinux, WRLinux should be built with:
 	1. Modify the ${buildprj}/build/conf/local.conf to add:
@@ -404,10 +433,12 @@ Step 1: Download Prebuilt PSDK RTOS
 
 	$ cd {path/to/file}
 	$ tar xf ti-processor-sdk-rtos-j721e-evm-<version>-prebuilt.tar.gz (J721E EVM)
+	$ tar xf ti-processor-sdk-rtos-j722s-evm-<version>-prebuilt.tar.gz (J722S EVM)
 
 Step 2: Download Demo Data Sets
 	psdk_rtos_ti_data_set_xx_xx_xx.tar.gz
 	psdk_rtos_ti_data_set_xx_xx_xx_j721e.tar.gz (J721E EVM)
+	psdk_rtos_ti_data_set_xx_xx_xx_j722s.tar.gz (J722S EVM)
 
 Step 3: Prepare SD card
 	$ sudo ./mk-linux-card.sh /dev/sdx
@@ -419,6 +450,9 @@ Step 4: Copy WRLinux Filesystem and Modify script
 For J721E EVM:
 	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j72xx/wrlinux-image-<rootfs_type>-ti-j72xx.tar.bz2 .
 	$ sed -i "s/tisdk-adas-image-j721e-evm.tar.xz/wrlinux-image-std-sato-ti-j72xx.rootfs.tar.bz2/;40s/-xf/-jxf/" install_to_sd_card.sh
+For J722S EVM:
+	$ cp path_to_your_project/build/tmp-glibc/deploy/images/ti-j722s/wrlinux-image-<rootfs_type>-ti-j722s.tar.bz2 .
+	$ sed -i 's/tisdk-adas-image-j722s-evm.tar.xz/wrlinux-image-std-sato-ti-j722s.rootfs.tar.bz2/;40s/-xf/-jxf/' install_to_sd_card.sh
 
 Step 5: Install Filesystem and Boot Files
 	$ ./install_to_sd_card.sh
@@ -429,10 +463,11 @@ Step 6: Run on EVM
  Run series demos:
 	$ cd /opt/vision_apps
 	$ source ./vision_apps_init.sh
-	$ ./run_app_tidl_avp.sh                 - Auto valet parking demo (needs display)
+	$ ./run_app_tidl_avp.sh    (For J721E EVM)
+	$ ./run_app_tidl.sh        (For J722S EVM)
 
-Note: more testing demos, you can refer to the guide document
-"out_of_box_j721e.html" in the TI web site.
+Note: more testing demos, you can refer to the guide document "out_of_box_j721e.html" or
+"out_of_box_j722s.html" in the TI web site.
 
 6.10.2 CPSW9G Virtual Client
 ----------------------------
@@ -467,10 +502,10 @@ TI Common Platform Ethernet Switch (CPSW) supports TSN features such as:
 	4.IET (Interspersing Express Traffic) [IEEE-802.3br, IEEE-802.1Qbu]
 
 To get more details about TSN feature, please refer to instructions mentioned in the sections
-"3.2.2.10.3.3. TSN with CPSW" in the web link user manual of PROCESSOR-SDK-LINUX-J721E or PROCESSOR-SDK-LINUX-J784S4.
+"3.2.2.10.3.3. TSN with CPSW" in the web link user manual of PROCESSOR-SDK-LINUX-J721E or PROCESSOR-SDK-LINUX-J722S.
 
 The following will provide a simple test demo for each TSN feature. Their test environment is
-to directly connect one J721E EVM board eth0 port as master to another J784S4 EVM board eth0 port as the slave.
+to directly connect one J721E EVM board eth0 port as master to another J722S EVM board eth0 port as the slave.
 
 Note: the below 'eth0' should be replaced with your own Ethernet port name.
 
@@ -611,3 +646,18 @@ ip addr add 192.168.100.20/24 dev eth0
 sleep 2
 iperf3 -c 192.168.100.30 -u -b200M -l1472 -u -t30 -i30 -p5002&
 iperf3 -c 192.168.100.30 -u -b50M -l1472 -u -t30 -i30 -p5003&
+
+6.9 Camera (J722S EVM)
+----------------------
+
+To enable camera connected to the 22-pin FFC connector, enable the sensor overlay at U-boot prompt:
+
+1. Boot from NFS:
+        => tftpboot 0x82000000 Image; tftpboot 0x88000000 dtb
+        => fdt address 0x88000000; fdt resize 0x100000; tftpboot 0x89000000 k3-j722s-evm-csi2-quad-rpi-cam-imx219.dtbo;fdt apply 0x89000000;
+        => booti 0x82000000 - 0x88000000
+
+2. Boot from WIC:
+ Just modify the uEnv.txt to add with below:
+        name_overlays=ti/k3-j722s-evm-csi2-quad-rpi-cam-imx219.dtbo
+
