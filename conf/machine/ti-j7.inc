@@ -50,7 +50,7 @@ PACKAGECONFIG:pn-weston-init = ""
 
 PREFERRED_VERSION_ti-img-rogue-umlibs = "24.2.6643903"
 PREFERRED_VERSION_ti-img-rogue-driver = "24.2.6643903"
-NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-echo-test-fw ti-dm-fw ti-eth-fw-j721e ti-k3-secdev ti-hsm-demo-fw"
+NON_MULTILIB_RECIPES:append = " u-boot-ti-staging optee-os trusted-firmware-a ti-rtos-echo-test-fw ti-dm-fw ti-eth-fw-j721e ti-k3-secdev ti-hsm-demo-fw tisdk-uenv"
 # For ostree
 OSTREE_BOOTLOADER_INCLUDE ?= ""
 
