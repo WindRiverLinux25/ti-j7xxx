@@ -661,3 +661,12 @@ To enable camera connected to the 22-pin FFC connector, enable the sensor overla
  Just modify the uEnv.txt to add with below:
         name_overlays=ti/k3-j722s-evm-csi2-quad-rpi-cam-imx219.dtbo
 
+6.10 Audio (J722S EVM)
+----------------------
+
+For recording using the mic pin on the 3.5mm jack, you will need to unmute
+MIC3R on the codec, and increase the capture volume:
+
+	# amixer sset 'Left PGA Mixer Mic3R' on
+	# amixer sset 'Right PGA Mixer Mic3R' on
+	# amixer sset PGA 90%
