@@ -647,8 +647,8 @@ sleep 2
 iperf3 -c 192.168.100.30 -u -b200M -l1472 -u -t30 -i30 -p5002&
 iperf3 -c 192.168.100.30 -u -b50M -l1472 -u -t30 -i30 -p5003&
 
-6.9 Camera (J722S EVM)
-----------------------
+6.12 Camera (J722S EVM)
+-----------------------
 
 To enable camera connected to the 22-pin FFC connector, enable the sensor overlay at U-boot prompt:
 
@@ -661,7 +661,20 @@ To enable camera connected to the 22-pin FFC connector, enable the sensor overla
  Just modify the uEnv.txt to add with below:
         name_overlays=ti/k3-j722s-evm-csi2-quad-rpi-cam-imx219.dtbo
 
-6.10 Audio (J722S EVM)
+After the system boots up, run the following commands on the target board to verify the camera feature
+(with the camera plugged into the J2 slot as an example):
+
+	# ls /dev/video
+	# v4l2-ctl --list-devices
+	# media-ctl -d /dev/media2 -p
+	# media-ctl -d /dev/media2 --set-v4l2 '"imx219 7-0010":0[fmt:SRGGB8_1X8/640x480]'
+	# media-ctl -d /dev/media2 --set-v4l2 '"cdns_csi2rx.30141000.csi-bridge":0[fmt:SRGGB8_1X8/640x480]'
+	# media-ctl -d /dev/media2 --set-v4l2 '"cdns_csi2rx.30141000.csi-bridge":1[fmt:SRGGB8_1X8/640x480]'
+	# media-ctl -d /dev/media2 --set-v4l2 '"30142000.ticsi2rx":0[fmt:SRGGB8_1X8/640x480]'
+	# v4l2-ctl -d /dev/video2 --set-fmt-video=width=640,height=480,pixelformat=RGGB
+	# v4l2-ctl -d /dev/video2 --stream-mmap --stream-count=1 --stream-to=/tmp/test.raw && ls -la /tmp/test.raw
+
+6.13 Audio (J722S EVM)
 ----------------------
 
 For recording using the mic pin on the 3.5mm jack, you will need to unmute
